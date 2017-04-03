@@ -22,9 +22,9 @@ Set up keyboard shortcuts within linux (in Ubuntu it's *System Settings > Keyboa
 
 | command  | description |
 | ------------- | ------------- |
-| feen -d  | feen desktop  |
-| feen -w  | feen window  |
-| feen -a  | feen area  |
+| feen -d  | capture desktop  |
+| feen -w  | capture window  |
+| feen -a  | capture area  |
 | feen -f  | upload file  |
 
 ### Nautilus integration
