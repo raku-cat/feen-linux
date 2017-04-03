@@ -1,20 +1,20 @@
 #!/bin/bash
-# Puush for Linux (https://github.com/jacklul/puush-linux)
-#  by Jack'lul <www.jacklul.com>
+# Feen for Linux (https://github.com/raku-cat/feen-linux)
+#  by Raku <raku@rakutiki.tv>
 #
 # This script is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License (LGPL) as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This script is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this script. If not, see <http://www.gnu.org/licenses/>.
-# 
+#
 ##################
 
 # Simple function to check if package is installed
@@ -24,7 +24,7 @@ function checkDependency()
 		if [ -t 1 ] ; then
 			printf "Failed to find required command '$1', check dependencies!\n" "$1"
 		else
-			notify-send "puush error!" "Failed to find required command '$1', check dependencies!" -t 5000 -i "/usr/share/pixmaps/puush.png"
+			notify-send "feen error!" "Failed to find required command '$1', check dependencies!" -t 5000 -i "/usr/share/pixmaps/feen.png"
 		fi
 
 		exit 1
@@ -33,7 +33,7 @@ function checkDependency()
 
 # $1: fileName (Required)
 # $2: delete after use (Not required. Default: false)
-function puushFile()
+function feenFile()
 {
 	if [[ -z "$1" ]]; then
 		return
@@ -45,10 +45,10 @@ function puushFile()
 	fi
 	
 	if ! [ -t 1 ] ; then
-		notify-send "puush" "Uploading..." -t 1500 -i "/usr/share/pixmaps/puush.png"
+		notify-send "feen" "Uploading..." -t 1500 -i "/usr/share/pixmaps/feen.png"
 	fi
 
-	result=`curl "https://puush.me/api/up" -# -F "k=$PUUSH_API_KEY" -F "z=lulz" -F "f=@$1" | sed -E 's/^.+,(.+),.+,.+$/\1\n/'`
+	result=`curl "https://feen.us/upload" -# -F "secret=$FEEN_API_KEY" -F "file=@$1" | sed -E 's/^.+,(.+),.+,.+$/\1\n/'`
 
 	if [ "$2" = true ]; then
 	    /bin/rm "$1"
@@ -60,17 +60,17 @@ function puushFile()
 # Need help?
 function printHelp ()
 {
-	printf "puush-linux by Jack'lul <www.jacklul.com>\n"
-	printf " GitHub: https://github.com/jacklul/puush-linux\n"
+	printf "feen-linux by Raku <raku@rakutiki.tv>\n"
+	printf " GitHub: https://github.com/raku-cat/feen-linux\n"
 	printf "\n"
 	printf "Usage:\n"
-	printf "  puush [OPTION] [FILE]\n"
+	printf "  feen [OPTION] [FILE]\n"
 	printf "\n"
 	printf "OPTIONS:\n"
-	printf "  -d, --desktop		puush entire desktop\n"
-	printf "  -w, --window		puush current window\n"
-	printf "  -a, --area		select area to puush\n"
-	printf "  -f, --file		puush specific file (opens file dialog)\n"
+	printf "  -d, --desktop		capture entire desktop\n"
+	printf "  -w, --window		capture current window\n"
+	printf "  -a, --area		select area to capture\n"
+	printf "  -f, --file		upload specific file (opens file dialog)\n"
 	printf "  -h, --help		shows this help\n"
 	printf "\n"
 	printf "FILE specifies path to file you want to upload, must be used\n without parameters.\n"
@@ -85,54 +85,55 @@ checkDependency "scrot"
 checkDependency "curl"
 checkDependency "xclip"
 checkDependency "notify-send"
+checkDependency "jq"
 
 # Check for configuration, if it doesn't exist create it and ask user for API key
-if ! [ -f "$HOME/.config/puush/puush.conf" ] ; then
+if ! [ -f "$HOME/.config/feen/feen.conf" ] ; then
 	printf "Configuration file is missing, creating new one...\n"
 	
-	if mkdir -p $HOME/.config/puush/; then
+	if mkdir -p $HOME/.config/feen/; then
 		if [ -t 1 ] ; then
-			printf "\n(You can find your API key at http://puush.me/account/settings)\n"
+			printf "\n(You can find your API key at https://feen.us/user)\n"
 			read -p "API key: " apikey
 			printf "\n"
 		fi
 
-		printf "# puush-linux configuration file\n
-# API key (You can find your API key at http://puush.me/account/settings)
-PUUSH_API_KEY=$apikey
-\n" > $HOME/.config/puush/puush.conf
+		printf "# feen-linux configuration file\n
+# API key (You can find your API key at https://feen.us/user)
+FEEN_API_KEY=$apikey
+\n" > $HOME/.config/feen/feen.conf
 		
-		. $HOME/.config/puush/puush.conf
+		. $HOME/.config/feen/feen.conf
 	else
 		exit 1
 	fi
 else
-	. $HOME/.config/puush/puush.conf
+	. $HOME/.config/feen/feen.conf
 fi
 
 # Handle empty API key or no parameter
-if [ -z "$PUUSH_API_KEY" ]; then
+if [ -z "$FEEN_API_KEY" ]; then
 	if [ -t 1 ] ; then
-		printf "Missing required configuration variable 'PUUSH_API_KEY'!\n"
-		printf "Please set it in '$HOME/.config/puush/puush.conf'.\n"
+		printf "Missing required configuration variable 'FEEN_API_KEY'!\n"
+		printf "Please set it in '$HOME/.config/feen/feen.conf'.\n"
 	else
-		notify-send "Missing required configuration variable 'PUUSH_API_KEY'!" "Please set it in '$HOME/.config/puush/puush.conf'." -t 5000 -i "/usr/share/pixmaps/puush.png"
+		notify-send "Missing required configuration variable 'FEEN_API_KEY'!" "Please set it in '$HOME/.config/feen/feen.conf'." -t 5000 -i "/usr/share/pixmaps/feen.png"
 	fi
 	exit 1
 elif [ -z "$1" ]; then
-	printf "Try 'puush --help' for usage informations.\n"
+	printf "Try 'feen --help' for usage informations.\n"
 	exit 1
 fi
 
 fileName="/tmp/$(date '+%Y%m%d%H%I%S').png"
-fileURL=""
+response=""
 
-# Get file to puush and puush it
+# Get file to feen and feen it
 case "$1" in
 	-d|--desktop|--d)
 			scrot "$fileName"	
 			if [ $? -eq 0 ]; then			
-				fileURL=`puushFile "$fileName" true`
+				response=`feenFile "$fileName" true`
 			else
 				exit 1
 			fi
@@ -140,7 +141,7 @@ case "$1" in
 	-w|--window|--w)
 			scrot -bu "$fileName"
 			if [ $? -eq 0 ]; then			
-				fileURL=`puushFile "$fileName" true`
+				response=`feenFile "$fileName" true`
 			else
 				exit 1
 			fi
@@ -148,7 +149,7 @@ case "$1" in
 	-a|--area|--a)
 			scrot -s "$fileName"
 			if [ $? -eq 0 ]; then
-				fileURL=`puushFile "$fileName" true`
+				response=`feenFile "$fileName" true`
 			else
 				exit 1
 			fi
@@ -157,7 +158,7 @@ case "$1" in
 			checkDependency "zenity"
 			fileName=`zenity --file-selection`
 			if ! [ -z "$fileName" ] ; then
-				fileURL=`puushFile "$fileName" false`
+				response=`feenFile "$fileName" false`
 			else
 				exit 1
 			fi
@@ -168,23 +169,24 @@ case "$1" in
 		;;
 	*)
 			fileName=$1
-			fileURL=`puushFile "$fileName" false`
+			response=`feenFile "$fileName" false`
 		;;
 esac
 
 # Show results, copy link to clipboard if upload was successful, otherwise show error
-if printf "$fileURL" | grep -q "puu.sh"  ; then
+if $(echo $response | jq '.success') == "true"  ; then
+	fileURL=$(echo $response | jq -r '.file')
 	printf $fileURL | xclip -selection "clipboard"
 	
 	if [ -t 1 ] ; then
 		printf "$fileURL\n"
 	else
-		notify-send "puush complete!" "$fileURL" -t 3000 -i "/usr/share/pixmaps/puush.png"
+		notify-send "feen complete!" "$fileURL" -t 3000 -i "/usr/share/pixmaps/feen.png"
 	fi
 else
 	if [ -t 1 ] ; then
 		printf "Error: $fileURL\n"
 	else
-		notify-send "puush error!" "$fileURL" -t 5000 -i "/usr/share/pixmaps/puush.png"
+		notify-send "feen error!" "$fileURL" -t 5000 -i "/usr/share/pixmaps/feen.png"
 	fi
 fi
