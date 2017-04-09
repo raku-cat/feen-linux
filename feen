@@ -67,11 +67,11 @@ function printHelp ()
 	printf "  feen [OPTION] [FILE]\n"
 	printf "\n"
 	printf "OPTIONS:\n"
-	printf "  -d, --desktop		capture entire desktop\n"
-	printf "  -w, --window		capture current window\n"
-	printf "  -a, --area		select area to capture\n"
-	printf "  -f, --file		upload specific file (opens file dialog)\n"
-	printf "  -h, --help		shows this help\n"
+	printf "  -d, --desktop		Capture entire desktop\n"
+	printf "  -w, --window		Capture current window\n"
+	printf "  -a, --area		Select area to capture\n"
+	printf "  -f, --file		Upload specific file (opens file dialog)\n"
+	printf "  -h, --help		Shows this help\n"
 	printf "\n"
 	printf "FILE specifies path to file you want to upload, must be used\n without parameters.\n"
 	printf "\n"
@@ -181,12 +181,12 @@ if $(echo $response | jq '.success') == "true"  ; then
 	if [ -t 1 ] ; then
 		printf "$fileURL\n"
 	else
-		notify-send "feen complete!" "$fileURL" -t 3000 -i "/usr/share/pixmaps/feen.png"
+		notify-send "Upload complete!" "$fileURL" -t 3000 -i "/usr/share/pixmaps/feen.png"
 	fi
 else
 	if [ -t 1 ] ; then
 		printf "Error: $fileURL\n"
 	else
-		notify-send "feen error!" "$fileURL" -t 5000 -i "/usr/share/pixmaps/feen.png"
+		notify-send "Upload error!" "$fileURL" -t 5000 -i "/usr/share/pixmaps/feen.png"
 	fi
 fi
