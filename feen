@@ -81,7 +81,7 @@ function printHelp ()
 # LETS BEGIN
 
 # Check for required commands
-checkDependency "scrot"
+checkDependency "maim"
 checkDependency "curl"
 checkDependency "xclip"
 checkDependency "notify-send"
@@ -131,7 +131,7 @@ response=""
 # Get file to feen and feen it
 case "$1" in
 	-d|--desktop|--d)
-			scrot "$fileName"	
+			maim "$fileName"	
 			if [ $? -eq 0 ]; then			
 				response=`feenFile "$fileName" true`
 			else
@@ -147,7 +147,7 @@ case "$1" in
 			fi
 		;;
 	-a|--area|--a)
-			scrot -s "$fileName"
+			maim -s "$fileName"
 			if [ $? -eq 0 ]; then
 				response=`feenFile "$fileName" true`
 			else
